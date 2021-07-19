@@ -34,24 +34,27 @@ if st.sidebar.button("Generate", key='g'):
                 print(semester)
                 parallels, counters = get_parallels(subjects, semester=semester)
                 plans = solve(parallels, counters, fitness=lambda x: overlap_fitness(x, parallels), weights=(-1,)).items
-                st.session_state['PLANS'] = plans
-                st.session_state['PARALLELS'] = parallels
+                if plans:
+                    st.session_state['PLANS'] = plans
+                    st.session_state['PARALLELS'] = parallels
     else:
         st.image("pepe.gif")
         st.text("You have to input courses and stuff 🤡")
 
 if 'PLANS' in st.session_state:
-    if st.session_state['PLANS'] == [[]] or len(st.session_state['PLANS'])==0:
+    if not st.session_state['PLANS'] or st.session_state['PLANS'][0] == [] :
         st.image("cat.gif")
         st.text("No solution found 😿")
+    
     else:
-
         choice = choice.slider("Preview parallel", min_value=0, max_value=len(st.session_state['PLANS'])-1)
-        base64_pdf = render(decode(st.session_state['PLANS'][choice],st.session_state['PARALLELS']))
+        decoded = decode(st.session_state['PLANS'][choice],st.session_state['PARALLELS'])
+        base64_pdf = render(decoded)
             # time.sleep(3)
         pdf_2_display = f'<embed src="data:application/pdf;base64,{base64_pdf}" width="90%" height="800" type="application/pdf">'
         st.markdown(pdf_2_display, unsafe_allow_html=True)
         
-
+        for x in decoded:
+            st.sidebar.text(f'{x}')
         
 

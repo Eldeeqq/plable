@@ -49,8 +49,8 @@ class Parallel:
     def __repr__(self) -> str:
         return f"<Parallel {self._parallel_no} [{self._course}|{self._type}]>"
 
-    def str(self) -> str:
-        return f'{self._course}/{self._type}/{"|".join([x[0] for x in self._slots])}'
+    def __str__(self) -> str:
+        return f'{self._course}/{self._type}/{self._parallel_no}'
 
     def collision_free(self, other):
         if not isinstance(other, Parallel):

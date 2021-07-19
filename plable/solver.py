@@ -8,6 +8,8 @@ def generate(counters):
     vector = []
     for course in counters.keys():
         for cnt in counters[course].values():
+            if cnt == 0:
+                vector.append(0)
             vector.append(np.random.randint(0, cnt))
     return vector
 
@@ -29,7 +31,7 @@ def mutate(parallel_counters: dict[str, dict[str, int]], sample: list[int], prob
     for parallel in parallel_counters.values():
         for count in parallel.values():
             if np.random.randint(0, 1) < probability:
-                clone[index] += np.random.randint(0, count)
+                clone[index] += np.random.randint(0, count) if count>0 else 0
                 clone[index] %= count  
             index += 1
     

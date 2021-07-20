@@ -34,7 +34,7 @@ def render_day_grid(canvas):
 
     for i in range(6):
         canvas.line(0, i * cm * CELL_SCALE, MAX_WIDTH * cm, i * cm * CELL_SCALE)
-        canvas.drawString(-0.7 * cm, (i-0.5) * cm * CELL_SCALE, dow[i])
+        canvas.drawString(-0.8 * cm, (i-0.5) * cm * CELL_SCALE, dow[i])
 
     # add vertical lines?
 

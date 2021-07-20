@@ -1,4 +1,4 @@
-from typing import Counter
+from typing import Counter, List
 from kosapy import Kosapy
 
 from requests.sessions import session
@@ -29,7 +29,7 @@ kosapy = Kosapy(f"https://kosapi.{faculty}.cvut.cz/api/3b/", None, session=get_s
 # kosapy.use_cache(True)
 
 
-def get_parallels(classes: list[str], semester: str) -> list[Parallel]:
+def get_parallels(classes: List[str], semester: str) -> List[Parallel]:
     # classes = ["BI-ZMA", "BI-MLO", "BI-CAO", "BI-PA1", "BI-PS1", "BI-PAI"]
     parallels = {}
     counters = {}
@@ -62,4 +62,41 @@ def get_parallels(classes: list[str], semester: str) -> list[Parallel]:
         parallels[code] = collected
 
     return parallels, counters
+
+def get_class_paralles(course: str, semester: str) ->  List[Parallel]:
+    counters = {}
+    collected = {}
+    try:
+        classes = kosapy.courses.get(course).parallels(sem=semester)
+        for x in classes:
+            if x.occupied() >= x.capacity():
+                continue
+            if x.parallelType() not in collected:
+                    collected[x.parallelType()] = []
+                    counters[x.parallelType()] = 0
+            p = Parallel(
+                    course,
+                    x.course(),
+                    semester,
+                    x.parallelType(),
+                    x.code(),
+                    x.occupied(),
+                    x.capacity(),
+                    {y.__call__() for y in x.teacher} if isinstance(x.teacher, list) or isinstance(x.teacher, tuple) else {x.teacher()},
+                    [parse_slot(y) for y in x.timetableSlot]
+                    if isinstance(x.timetableSlot, list)
+                    else [parse_slot(x.timetableSlot)],
+                )
+            collected[x.parallelType()].append(p)
+            counters[x.parallelType()]+=1
+
+    except Exception as e:
+        pass
+
+    finally:
+        for key in collected.keys():
+            if not collected[key]:
+                del collected[key]
+                del counters[key]
+        return collected, counters
 

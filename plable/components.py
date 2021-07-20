@@ -14,9 +14,7 @@ def overlap(a, b):
     (5, "BOTH", "TK:PU1", "09:15:00", "10:45:00")
     if day_a != day_b:
         return False
-    start_a, start_b, end_a, end_b = map(
-        lambda x: datetime.strptime(x, "%H:%M:%S"), [start_a, start_b, end_a, end_b]
-    )
+    start_a, start_b, end_a, end_b = map(lambda x: datetime.strptime(x, "%H:%M:%S"), [start_a, start_b, end_a, end_b])
     # if times overlap -> collision
     if (start_a <= start_b <= end_a) or (start_b <= start_a <= end_b):
         # the only exception is with 'ODD' 'EVEN' combination:
@@ -50,7 +48,7 @@ class Parallel:
         return f"<Parallel {self._parallel_no} [{self._course}|{self._type}]>"
 
     def __str__(self) -> str:
-        return f'{self._course}/{self._type}/{self._parallel_no}'
+        return f"{self._course}/{self._type}/{self._parallel_no}"
 
     def collision_free(self, other):
         if not isinstance(other, Parallel):
@@ -77,4 +75,3 @@ class Parallel:
         if not isinstance(o, Parallel):
             return False
         return self._course == o._course and self._parallel_no == o._parallel_no
-

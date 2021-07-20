@@ -4,11 +4,11 @@ def overlap_fitness(vector: list[int], parallels):
     """
     final = []
     used = 0
-    
+
     for cls in parallels.values():
         for parallel_list in cls.values():
             final.append(parallel_list[vector[used]])
-            used +=1
+            used += 1
 
     hits = 0
     for i, x in enumerate(final):
@@ -16,4 +16,4 @@ def overlap_fitness(vector: list[int], parallels):
             if not x.collision_free(y):
                 hits += 1
 
-    return hits,
+    return (hits,)

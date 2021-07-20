@@ -22,19 +22,17 @@ EVENT_TYPE = {"LECTURE": "Lec.", "TUTORIAL": "Tut.", "LABORATORY": "Lab."}
 event_pos = lambda x: SCALE * (x / MAX_WIDTH) * cm
 
 
-event_height = (
-    lambda col, parity: (5 - col + 0.5 if parity == "EVEN" else 5 - col) * CELL_SCALE * cm
-)
+event_height = lambda col, parity: (5 - col + 0.5 if parity == "EVEN" else 5 - col) * CELL_SCALE * cm
 event_size = lambda parity: (CELL_SCALE if parity == "BOTH" else CELL_SCALE / 2) * cm
 
 
 def render_day_grid(canvas):
-    dow = ['MON', 'TUE', 'WED', 'THU', 'FRI',''][::-1]
+    dow = ["MON", "TUE", "WED", "THU", "FRI", ""][::-1]
     canvas.setFont("Helvetica", 8)
 
     for i in range(6):
         canvas.line(0, i * cm * CELL_SCALE, MAX_WIDTH * cm, i * cm * CELL_SCALE)
-        canvas.drawString(-0.8 * cm, (i-0.5) * cm * CELL_SCALE, dow[i])
+        canvas.drawString(-0.8 * cm, (i - 0.5) * cm * CELL_SCALE, dow[i])
 
     # add vertical lines?
 
@@ -60,7 +58,7 @@ def render_event(canvas, day, start, end, type, course, parity, parallel_no):
     # duration
     canvas.setFont("Helvetica", 8)
     canvas.drawString(
-        event_pos(start) + 3, 
+        event_pos(start) + 3,
         event_height(day, parity) + (25 if parity == "BOTH" else 5),
         event_time,
     )
@@ -106,7 +104,7 @@ def render(selected_parallel_list: list[Parallel]) -> bytearray:
         canvas.save()
 
         with open(file.name, "rb") as f:
-            base64_pdf = base64.b64encode(f.read()).decode('utf-8')
+            base64_pdf = base64.b64encode(f.read()).decode("utf-8")
         # print(f"Done: {file.name}")
 
         return base64_pdf

@@ -84,9 +84,7 @@ class Resource:
             return self
         else:
             if not self._content:
-                self._content = self._api.get_contents(
-                    self._api.get_feed(self._location, self._params)
-                ).__next__()
+                self._content = self._api.get_contents(self._api.get_feed(self._location, self._params)).__next__()
             return self._content
 
     def __iter__(self):
@@ -96,9 +94,7 @@ class Resource:
                 yield entry
 
             if feed.get("atom:feed") and feed.get("atom:feed").get("atom:link", rel="next"):
-                feed = self._api.get_feed(
-                    feed.get("atom:feed").get("atom:link", rel="next")("href")
-                )
+                feed = self._api.get_feed(feed.get("atom:feed").get("atom:link", rel="next")("href"))
             else:
                 break
 
@@ -233,4 +229,3 @@ class KosapiSaxHandler(xml.sax.ContentHandler):
 
     def characters(self, content):
         self.path[-1]._content += content.strip()
-

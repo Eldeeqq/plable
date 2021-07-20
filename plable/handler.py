@@ -14,8 +14,9 @@ import numpy as np
 from oauthlib.oauth2 import BackendApplicationClient
 from requests_oauthlib import OAuth2Session
 
-from requests.auth import  HTTPBasicAuth
+from requests.auth import HTTPBasicAuth
 from plable.renderer import render
+
 
 def get_session(user, password, auth_endpoint="auth.fit.cvut.cz"):
     auth = HTTPBasicAuth(user, password)
@@ -25,7 +26,11 @@ def get_session(user, password, auth_endpoint="auth.fit.cvut.cz"):
     return oauth
 
 
-kosapy = Kosapy(f"https://kosapi.{faculty}.cvut.cz/api/3b/", None, session=get_session(user, password))
+kosapy = Kosapy(
+    f"https://kosapi.{faculty}.cvut.cz/api/3b/",
+    None,
+    session=get_session(user, password),
+)
 # kosapy.use_cache(True)
 
 
@@ -51,7 +56,9 @@ def get_parallels(classes: List[str], semester: str) -> List[Parallel]:
                     x.code(),
                     x.occupied(),
                     x.capacity(),
-                    {y.__call__() for y in x.teacher} if isinstance(x.teacher, list) or isinstance(x.teacher, tuple) else {x.teacher()},
+                    {y.__call__() for y in x.teacher}
+                    if isinstance(x.teacher, list) or isinstance(x.teacher, tuple)
+                    else {x.teacher()},
                     [parse_slot(y) for y in x.timetableSlot]
                     if isinstance(x.timetableSlot, list)
                     else [parse_slot(x.timetableSlot)],
@@ -63,7 +70,8 @@ def get_parallels(classes: List[str], semester: str) -> List[Parallel]:
 
     return parallels, counters
 
-def get_class_paralles(course: str, semester: str) ->  List[Parallel]:
+
+def get_class_paralles(course: str, semester: str) -> List[Parallel]:
     counters = {}
     collected = {}
     try:
@@ -72,23 +80,23 @@ def get_class_paralles(course: str, semester: str) ->  List[Parallel]:
             if x.occupied() >= x.capacity():
                 continue
             if x.parallelType() not in collected:
-                    collected[x.parallelType()] = []
-                    counters[x.parallelType()] = 0
+                collected[x.parallelType()] = []
+                counters[x.parallelType()] = 0
             p = Parallel(
-                    course,
-                    x.course(),
-                    semester,
-                    x.parallelType(),
-                    x.code(),
-                    x.occupied(),
-                    x.capacity(),
-                    {y.__call__() for y in x.teacher} if isinstance(x.teacher, list) or isinstance(x.teacher, tuple) else {x.teacher()},
-                    [parse_slot(y) for y in x.timetableSlot]
-                    if isinstance(x.timetableSlot, list)
-                    else [parse_slot(x.timetableSlot)],
-                )
+                course,
+                x.course(),
+                semester,
+                x.parallelType(),
+                x.code(),
+                x.occupied(),
+                x.capacity(),
+                {y.__call__() for y in x.teacher}
+                if isinstance(x.teacher, list) or isinstance(x.teacher, tuple)
+                else {x.teacher()},
+                [parse_slot(y) for y in x.timetableSlot] if isinstance(x.timetableSlot, list) else [parse_slot(x.timetableSlot)],
+            )
             collected[x.parallelType()].append(p)
-            counters[x.parallelType()]+=1
+            counters[x.parallelType()] += 1
 
     except Exception as e:
         pass
@@ -99,4 +107,3 @@ def get_class_paralles(course: str, semester: str) ->  List[Parallel]:
                 del collected[key]
                 del counters[key]
         return collected, counters
-

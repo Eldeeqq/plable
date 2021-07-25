@@ -2,33 +2,36 @@
 Timetable planner for FIT CTU.
 
 ## What is it?
-This app uses [Evolution algorithm](https://en.wikipedia.org/wiki/Evolutionary_algorithm) to create a class schedule satisfying some strategy.
+This app is written in Python 3(.8) and streamlit. It uses [Evolutionary algorithm](https://en.wikipedia.org/wiki/Evolutionary_algorithm) to create a timetable that satisfies some strategy.
 
+Possible bugs submit via [github issues](https://github.com/Eldeeqq/plable/issues).
 ## How to use it?
-- Simply write a list of courses you want to attend and select specific semester
+- Simply write a list of courses you want to attend and select semester and strategy
 
 for example:
 ```
 BI-DBS, BI-SAP, BI-LIN, BI-PA2
 ```
 - Select a criteria based on which the timetable will be planned
-> currently the only strategy is `Minimal collision`, however, I plan to add some more in the future (f. e. `Least time in school`, `Minimal span between classes`,`...`)
-- Hit generate button
-- If the algorithm will be able to produce some solutions, you can prewiew them (max. 10)
+> currently the only strategy is `Least collisions`, however, I plan to add some more in the future (f. e. `Least time in school`, `Time between classes`,`...`)
+- Hit *generate* button
+- If the algorithm will be able to produce some solutions, you can prewiew them (currently max. 10)
 
 
 ## Possible extensions
 - teacher (wish/black)list
 - lunch breaks
 - more strategies
+- timetable.fit.cvut.cz like timetable
 
-## Evolution Algorihm
+## Evolutionary Algorihm
 
 
 ### Genotype
 Based on provided list of courses, the application gets the information about `lectures`, `tutorials` and `labs` of each course (if present).
 
 These informations are then encoded as a vector of numbers corresponding to an index of `lecture`/`tutorial`/`lab` of specific course.
+
 
 <table style="border-collapse: collapse; border: medium none; border-spacing: 0px;">
 	<tr>
@@ -117,16 +120,12 @@ These informations are then encoded as a vector of numbers corresponding to an i
 	</tr>
 </table>
 
-Could produce vector: 
+
+Would produce a vector: 
 [1, 0, 0, 2]
 
 ### Mutation
-For each item in vector with a probability `p` the mutation is done as following:
-```
-get random number from range [0, max_index]
-add the two numbers 
-do new_number mod max_index+1
-```
+Basically with probability `p` for each number in genotype a value from range [0, len-1] is added and then `result % len` is the final mutated gene. This is due to fact that each lab/lecture/tutoroial has finite number of parallels and this w
 
 ### Crossover 
 I used [Uniform crossover](https://en.wikipedia.org/wiki/Crossover_(genetic_algorithm)#Uniform_crossover).

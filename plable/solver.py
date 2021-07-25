@@ -15,16 +15,6 @@ def generate(counters):
     return vector
 
 
-def decode(sample, parallels):
-    vector = []
-    index = 0
-    for course in parallels.keys():
-        for type in parallels[course].values():
-            vector.append(type[sample[index]])
-            index += 1
-    return vector
-
-
 def mutate(parallel_counters: dict[str, dict[str, int]], sample: list[int], probability=0.5) -> list[int]:
     index = 0
     clone = copy.deepcopy(sample)
@@ -62,9 +52,9 @@ def solve(parallels, counters, fitness, weights):
     tb.register("mutate", mutate, counters, probability=0.7)
     tb.register("select", tools.selRoulette)
 
-    pop = tb.population(n=100)
+    pop = tb.population(n=150)
 
     hof = tools.HallOfFame(10)  # hall of fame
 
-    res = algorithms.eaSimple(pop, tb, cxpb=0.3, mutpb=0.5, ngen=20, halloffame=hof)
+    res = algorithms.eaSimple(pop, tb, cxpb=0.3, mutpb=0.6, ngen=20, halloffame=hof, verbose=False)
     return hof

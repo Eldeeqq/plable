@@ -1,4 +1,5 @@
 from datetime import datetime
+import enum
 
 
 def parse_slot(slot):
@@ -43,6 +44,14 @@ class Parallel:
         self._teachers = teachers
         self._slots = slots
         self._type = type
+        self.filter_slots()
+
+    def filter_slots(self):
+        tmp = {}
+        for x in self._slots:
+            day, parity, room, start, end = x
+            tmp.update({(day, parity, start, end): x})
+        self._slots = list(tmp.values())
 
     def __repr__(self) -> str:
         return f"<Parallel {self._parallel_no} [{self._course}|{self._type}]>"

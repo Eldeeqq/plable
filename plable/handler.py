@@ -1,4 +1,4 @@
-from typing import Counter, List
+from typing import Counter, List, final
 from kosapy import Kosapy
 
 from requests.sessions import session
@@ -6,16 +6,18 @@ from datetime import datetime
 from plable.components import parse_slot
 from plable.components import Parallel
 
-faculty = "fit"
-user = "94e86e19-51f9-4cfa-9c1a-872e482538d1"
-password = "rzdYZ5VI5xhfb9rblHyvQynSAw8Ogk1s"
-
 import numpy as np
 from oauthlib.oauth2 import BackendApplicationClient
 from requests_oauthlib import OAuth2Session
 
 from requests.auth import HTTPBasicAuth
 from plable.renderer import render
+
+import os
+
+faculty = "fit"
+user = os.environ.get("USER")
+password = os.environ.get("SECRET")
 
 
 def get_session(user, password, auth_endpoint="auth.fit.cvut.cz"):
@@ -93,7 +95,9 @@ def get_class_paralles(course: str, semester: str) -> List[Parallel]:
                 {y.__call__() for y in x.teacher}
                 if isinstance(x.teacher, list) or isinstance(x.teacher, tuple)
                 else {x.teacher()},
-                [parse_slot(y) for y in x.timetableSlot] if isinstance(x.timetableSlot, list) else [parse_slot(x.timetableSlot)],
+                [parse_slot(y) for y in x.timetableSlot]
+                if isinstance(x.timetableSlot, list)
+                else [parse_slot(x.timetableSlot)],
             )
             collected[x.parallelType()].append(p)
             counters[x.parallelType()] += 1
@@ -102,8 +106,10 @@ def get_class_paralles(course: str, semester: str) -> List[Parallel]:
         pass
 
     finally:
+        final_collected = {}
+        final_counter = {}
         for key in collected.keys():
-            if not collected[key]:
-                del collected[key]
-                del counters[key]
-        return collected, counters
+            if collected[key]:
+                final_collected.update({key: collected[key]})
+                final_counter.update({key: counters[key]})
+        return final_collected, final_counter  # redo

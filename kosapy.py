@@ -3,6 +3,8 @@
 __author__ = "martinjr"
 __all__ = ["Kosapy"]
 
+# modified version supporting oauth2 and http session
+
 import xml.sax
 import requests
 import requests_cache
